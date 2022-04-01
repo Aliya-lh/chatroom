@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="content">
+    <button onclick="sendMessage()">发送消息</button>
+</body>
+<script>
+    //先创建一个websocket对象，用来建立连接，客户端收发数据
+    //url格式————协议名://ip:port/contextPath/资源路径
+    //contextPath是部署的项目名/项目路径，websocket协议名ws
+    let ws = new WebSocket("ws://127.0.0.1:8080/chatroom/message");
+    //为websocket对象绑定事件（事件发生的时候，由浏览器自动调用事件函数）
+    //建立连接的事件: e就是事件对象
+    ws.onopen = function(e){
+        console.log("客户端建立连接")
+    }
+    //关闭连接的事件：关闭可能是先由服务端关闭，或者先由客户端关闭
+    ws.onclose = function(e){
+        let reason = e.reason;
+        console.log("close: "+reason)
+        if(reason){
+            alert(reason)
+        }
+    }
+    //发生错误时的事件
+    ws.onerror = function(e){
+        console.log("websocket出错了")
+    }
+    //接收到消息时的事件
+    ws.onmessage = function(e){//服务端推送消息给客户端时，执行这个函数
+        console.log(e.data)//通过事件对象.data就可以获取到服务端推送的消息（可以是二进制数据，或字符串）
+    }
+
+    function sendMessage(){
+        let content = document.querySelector("#content");
+        ws.send(content.value);//使用websocket对象.send，客户端发送消息给服务端
+    }
+</script>
+</html>

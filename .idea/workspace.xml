@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fb5aca81-8e5e-45dd-afac-8e8a18973388" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedIndex" value="1" />
+  </component>
+  <component name="ProjectId" id="278aA9d67kYH4SR6nZGHFQN4MHk" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="SDKs" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.14680232" />
+    <property name="settings.editor.selected.configurable" value="File.Encoding" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\86188\Desktop\web聊天室\src\main\webapp\img" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Smart Tomcat.Unnamed">
+    <configuration name="DBUtil.getConnectionTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="chatroom" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example.util" />
+      <option name="MAIN_CLASS_NAME" value="org.example.util.DBUtil" />
+      <option name="METHOD_NAME" value="getConnectionTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MessageDao" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="chatroom" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.dao.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example.dao" />
+      <option name="MAIN_CLASS_NAME" value="org.example.dao.MessageDao" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MessageDao.insertTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="chatroom" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.dao.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example.dao" />
+      <option name="MAIN_CLASS_NAME" value="org.example.dao.MessageDao" />
+      <option name="METHOD_NAME" value="insertTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserDao.insertTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="chatroom" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.dao.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example.dao" />
+      <option name="MAIN_CLASS_NAME" value="org.example.dao.UserDao" />
+      <option name="METHOD_NAME" value="insertTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WebUtil.writeTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="chatroom" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example.util" />
+      <option name="MAIN_CLASS_NAME" value="org.example.util.WebUtil" />
+      <option name="METHOD_NAME" value="writeTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Unnamed" type="com.poratu.idea.plugins.tomcat" factoryName="SMART_TOMCAT_FACTORY" nameIsGenerated="true">
+      <option name="adminPort" value="8005" />
+      <option name="contextPath" value="/chatroom" />
+      <option name="docBase" value="$PROJECT_DIR$/src/main/webapp" />
+      <option name="envOptions" />
+      <option name="passParentEnvironmentVariables" value="true" />
+      <option name="port" value="8080" />
+      <option name="tomcatInfo">
+        <TomcatInfo>
+          <option name="name" value="Apache Tomcat/8.5.77" />
+          <option name="number" value="0" />
+          <option name="path" value="C:\Users\86188\Desktop\apache-tomcat-8.5.77" />
+          <option name="version" value="8.5.77.0" />
+        </TomcatInfo>
+      </option>
+      <option name="vmOptions" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="JUnit.DBUtil.getConnectionTest" />
+      <item itemvalue="JUnit.MessageDao" />
+      <item itemvalue="JUnit.MessageDao.insertTest" />
+      <item itemvalue="JUnit.UserDao.insertTest" />
+      <item itemvalue="JUnit.WebUtil.writeTest" />
+      <item itemvalue="Smart Tomcat.Unnamed" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.UserDao.insertTest" />
+        <item itemvalue="JUnit.MessageDao.insertTest" />
+        <item itemvalue="JUnit.DBUtil.getConnectionTest" />
+        <item itemvalue="JUnit.MessageDao" />
+        <item itemvalue="JUnit.WebUtil.writeTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fb5aca81-8e5e-45dd-afac-8e8a18973388" name="Changes" comment="" />
+      <created>1648704029753</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1648704029753</updated>
+    </task>
+    <servers />
+  </component>
+</project>

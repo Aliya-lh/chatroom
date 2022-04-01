@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web聊天室</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/message.css">
+</head>
+<body>
+    <div id="app" v-cloak>
+        <div id="nav">
+            <span>欢迎您！{{ currentUser.nickname }}</span>
+            <a href="../logout">注销</a>
+        </div>
+        <div id="container">
+            <div id="channel-list">
+                <div :class="c.id==currentChannel.id ? 'channel-row-checked' : 'channel-row-unchecked'" v-for="c in channels" :key="c.id" @click="changeChannel(c)">
+                    <span class="channel-item">{{ c.name }}</span>
+                    <span v-if="c.unreadCount" class="unread">{{ c.unreadCount }}</span>
+                </div>
+            </div>
+            <div id="dialog">
+                <div id="dialog-history">
+                    <div class="dialog-row" v-for="m in currentChannel.historyMessages" :key="m.id">
+                        <div class="dialog-date">{{ m.sendTime }}</div>
+                        <div class="dialog-user">{{ m.userNickname }}</div>
+                        <div :class="m.userId==currentUser.id ? 'dialog-current-content' : 'dialog-other-content'">{{ m.content }}</div>
+                    </div>
+                </div>
+                <!-- @keyup="checkIfSend($event)" vue绑定按键弹起事件，$event就是事件对象 -->
+                <textarea id="dialog-content" v-model="currentChannel.inputMessageContent" @keyup="checkIfSend($event)"></textarea>
+                <div id="dialog-send">
+                    <button @click="sendMessage()">发送（S）</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../js/util.js"></script>
+<script src="../js/vue.js"></script>
+<script>
+    let app = new Vue({
+        el: "#app",
+        data: {
+            websocket: null,
+            //当前登录用户
+            currentUser: {
+                nickname: "",
+                head: "",
+            },
+            //频道/群列表：先写静态数据验证前端代码，后续需要从servlet获取数据
+            channels: [
+                {
+                    id: 1,
+                    name: "Java",
+                    //每个频道有自己的历史消息
+                    historyMessages: [],
+                    //每个频道有自己输入框的内容
+                    inputMessageContent: "",
+                    unreadCount: 0,
+                },
+                {
+                    id: 2,
+                    name: "C++",
+                    //每个频道有自己的历史消息
+                    historyMessages: [],
+                    //每个频道有自己输入框的内容
+                    inputMessageContent: "",
+                    unreadCount: 0,
+                },
+            ],
+            //当前频道
+            currentChannel: {
+                id: 1,
+                name: "Java",
+                //每个频道有自己的历史消息
+                historyMessages: [],
+                //每个频道有自己输入框的内容
+                inputMessageContent: "",
+                unreadCount: 0,
+            },
+        },
+        methods: {
+            //点击切换频道：channel是点击的频道
+            changeChannel: function(channel){
+                //如果点击的频道不是当前频道，才切换
+                if(channel.id != app.currentChannel.id){
+                    app.currentChannel = channel;
+                }
+                //切换到一个频道后，滚动到最后，并且未读消息数=0
+                app.scrollHistory();
+            },
+            //从服务端获取频道列表，再设置到vue的变量中，页面就可以跟着变
+            getChannels: function(){
+                ajax({
+                    method: "get",
+                    url: "../channelList",
+                    callback: function(status, responseText){
+                        // console.log(responseText);//查看一下响应正文的数据是否符合业务的，可以抓包（建议）
+                        if(status != 200){
+                            alert("出错了，响应状态码："+status);
+                            return;
+                        }
+                        let body = JSON.parse(responseText);//响应正文
+                        //返回{user: {}, channels: []}
+                        //注意：返回的channel是不带historyMessage和inputMessageContent
+                        app.currentUser = body.user;
+                        for(let i=0; i<body.channels.length; i++){
+                            body.channels[i].historyMessages = [];
+                            body.channels[i].inputMessageContent = "";
+                            body.channels[i].unreadCount = 0;
+                            //默认切换到第一个频道
+                            if(i == 0){
+                                app.currentChannel = body.channels[0];
+                            }
+                        }
+                        app.channels = body.channels;
+                        //初始化websocket：还需要接收消息（定义的接收消息函数）
+                        app.initWebsocket();
+                    }
+                });
+            },
+            initWebsocket: function(){
+                //先创建一个websocket对象，用来建立连接，客户端收发数据
+                //url格式————协议名://ip:port/contextPath/资源路径
+                //contextPath是部署的项目名/项目路径，websocket协议名ws
+                //这里要么写死，要么使用代码获取动态的[127.0.0.1:8080/chatroom]
+                let protocal = location.protocol;//获取当前地址栏url中的协议名 http:
+                //获取当前地址栏url：http://localhost:8080/chatroom/views/message.html
+                let url = location.href;
+                //截取需要的字符串: substring和Java中，字符串对象.substring(start, end), [start, end)
+                //字符串.indexOf(str), 返回第一个匹配str的索引位置
+                url = url.substring((protocal+"//").length, url.indexOf("/views/message.html"));
+                let ws = new WebSocket("ws://"+url+"/message");
+                //为websocket对象绑定事件（事件发生的时候，由浏览器自动调用事件函数）
+                //建立连接的事件: e就是事件对象
+                ws.onopen = function(e){
+                    console.log("客户端建立连接")
+                }
+                //关闭连接的事件：关闭可能是先由服务端关闭，或者先由客户端关闭
+                ws.onclose = function(e){
+                    let reason = e.reason;
+                    console.log("close: "+reason)
+                    if(reason){
+                        alert(reason)
+                    }
+                }
+                //发生错误时的事件
+                ws.onerror = function(e){
+                    console.log("websocket出错了")
+                }
+                //接收到消息时的事件
+                ws.onmessage = function(e){//服务端推送消息给客户端时，执行这个函数
+                    console.log(e.data)//通过事件对象.data就可以获取到服务端推送的消息（可以是二进制数据，或字符串）
+                    //遍历频道列表，如果频道id和获取到的消息中channelId相同，
+                    //把这条放到该频道的历史消息数组中
+                    let m = JSON.parse(e.data);//消息对象: e.data是json字符串
+                    for(let channel of app.channels){
+                        if(channel.id == m.channelId){
+                            //数组放元素：push
+                            channel.historyMessages.push(m);
+                            //如果是当前频道，就滚动到最后
+                            if(m.channelId == app.currentChannel.id){
+                                app.scrollHistory();
+                            }else{//非当前频道，未读消息数量++
+                                channel.unreadCount++;
+                            }
+                        }
+                    }
+                }
+                //刷新/关闭页面，也需要关闭websocket关闭
+                window.onbeforeunload = function(e){//当前窗口关闭前执行的函数
+                    //主动关闭webscoket连接
+                    ws.close();
+                }
+                app.websocket = ws;
+            },
+            //当前频道接收到新消息后，滚动到最下边
+            scrollHistory: function(){
+                //省略写法：app.$nextTick(()=>{ 函数体 })
+                app.$nextTick(function(){//异步操作：vue渲染元素css，数据完成后，再执行
+                    //当前频道历史消息div
+                    let history = document.querySelector("#dialog-history");
+                    //scrollTop是滚动条顶部的位置，scrollHeight是整个滚动div的高
+                    history.scrollTop = history.scrollHeight;
+                });
+                app.currentChannel.unreadCount = 0;
+            },
+            //绑定当前频道输入框的键盘按键弹起事件：检查是否是ctrl+enter来发送消息
+            checkIfSend: function(e){//e=>事件对象
+                // console.log(e)
+                //同时按下ctrl+enter，e.keyCode返回按键的一个代码，enter是13
+                if(e.keyCode == 13 && e.ctrlKey){
+                    app.sendMessage();
+                }
+            },
+            //发送消息
+            sendMessage: function(){
+                let content = app.currentChannel.inputMessageContent;
+                if(content){//输入框内容不为空，才发消息
+                    //需要使用initWebsocket()中的ws对象，先把这个保存再vue里边
+                    //后台需要插入数据库一条客户端发送的消息
+                    //id,user_id, user_nick,send_time(后端可以获取到，不用发),channel_id, content...）
+                    //注意：后端是将json字符串反序列化为message对象（驼峰式）
+                    app.websocket.send(JSON.stringify({
+                        channelId: app.currentChannel.id,
+                        content: content,
+                    }));
+                    //清空当前频道输入框内容
+                    app.currentChannel.inputMessageContent = "";
+                }
+            },
+        },
+    });
+    //页面初始化的时候，就需要获取频道列表
+    app.getChannels();
+</script>
+</html>

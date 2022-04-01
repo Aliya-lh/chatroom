@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web聊天室</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div id="app" v-cloak>
+        <form @submit.prevent="login()">
+            <h3>聊天室登录</h3>
+            <div class="row">
+                <span>用户名</span>
+                <input type="text" v-model="username" required>
+            </div>
+            <div class="row">
+                <span>密码</span>
+                <input type="password" v-model="password" required>
+            </div>
+            <div class="error-message">{{ errorMessage }}</div>
+            <div class="row">
+                <input type="submit" value="登录">
+            </div>
+            <div class="row-right">
+                <a href="views/register.html">注册</a>
+            </div>
+        </form>
+    </div>
+</body>
+<script src="js/util.js"></script>
+<script src="js/vue.js"></script>
+<script>
+    let app = new Vue({
+        el: "#app",
+        data: {
+            errorMessage: "",
+            username: "",
+            password: "",
+        },
+        methods: {
+            login: function (){
+                ajax({
+                    method: "post",
+                    url: "login",
+                    contentType: "application/json",
+                    body: JSON.stringify({
+                        username: app.username,
+                        password: app.password,
+                    }),
+                    callback: function(status, responseText){
+                        // console.log(responseText);//查看一下响应正文的数据是否符合业务的，可以抓包（建议）
+                        if(status != 200){
+                            alert("出错了，响应状态码："+status);
+                            return;
+                        }
+                        let body = JSON.parse(responseText);//响应正文
+                        if(body.ok){
+                            //跳转到消息页面
+                            alert("登录成功")
+                            window.location.href = "views/message.html";
+                        }else{
+                            //注册失败，显示错误信息
+                            app.errorMessage = body.reason;
+                        }
+                    }
+                });
+            },
+        },
+    });
+</script>
+</html>

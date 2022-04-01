@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web聊天室</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
+    <div id="app" v-cloak>
+        <!-- @subimit是以vue框架来绑定表单的提交事件,
+             .prevent禁止表单默认提交，只调用vue的方法 -->
+        <form @submit.prevent="register()">
+            <h3>聊天室注册</h3>
+            <div class="row">
+                <span>用户名</span>
+                <input type="text" v-model="username" required>
+            </div>
+            <div class="row">
+                <span>密码</span>
+                <input type="password" v-model="password" required>
+            </div>
+            <div class="row">
+                <span>昵称</span>
+                <input type="text" v-model="nickname" required>
+            </div>
+            <div class="row">
+                <span>头像</span>
+                <!-- 绑定文件控件选择文件时，发生改变的事件，$event是vue使用事件对象的方式 -->
+                <input type="file" accept="image/*" @change="showHead($event)">
+                <img :src="head.src" v-if="head.src">
+            </div>
+            <div class="error-message">{{ errorMessage }}</div>
+            <div class="row">
+                <input type="submit" value="注册">
+            </div>
+            <div class="row-right">
+                <a href="../index.html">返回登录</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script src="../js/util.js"></script>
+<script src="../js/vue.js"></script>
+<script>
+    let app = new Vue({
+        el: "#app",
+        data: {
+            errorMessage: "",
+            username: "",
+            password: "",
+            nickname: "",
+            head: {
+                file: "",//保存选择的文件
+                src: "",//选择好图片还没上传，客户端本地有一个图片地址
+            },
+        },
+        methods: {
+            //注册选择头像，显示预览图片
+            //e是传入的事件对象
+            showHead: function (e){
+                //获取选择的文件: 文件控件可以配置为选择多个文件
+                //e事件对象.target可以获取到事件发生的dom元素
+                let headFile = e.target.files[0];
+                //先保存
+                app.head.file = headFile;
+                //生成图片url（客户端本地的）
+                app.head.src = URL.createObjectURL(headFile);
+            },
+            register: function (){
+                //注册功能
+                //使用FormData对象来作为form-data格式上传的数据
+                let formData = new FormData();
+                //添加数据：append(key, value), key为请求数据form-data中的键
+                formData.append("username", app.username);
+                formData.append("password", app.password);
+                formData.append("nickname", app.nickname);
+                if(app.head.file){
+                    formData.append("headFile", app.head.file);
+                }
+                ajax({
+                    method: "post",
+                    url: "../register",//当前html是在/views/register.html
+                    //上传文件，使用form-data格式，但是不能设置这个Content-Type
+                    body: formData,
+                    callback: function(status, responseText){
+                        // console.log(responseText);//查看一下响应正文的数据是否符合业务的，可以抓包（建议）
+                        if(status != 200){
+                            alert("出错了，响应状态码："+status);
+                            return;
+                        }
+                        let body = JSON.parse(responseText);//响应正文
+                        if(body.ok){
+                            alert("注册成功");
+                            window.location.href = "../index.html";//跳转到登录页面
+                        }else{
+                            //注册失败，显示错误信息
+                            app.errorMessage = body.reason;
+                        }
+                    }
+                });
+            }
+        },
+    });
+</script>
+</html>
